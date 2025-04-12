@@ -1,5 +1,2 @@
 pandas
 requests
-time
-datetime
-os
