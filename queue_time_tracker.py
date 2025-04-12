@@ -6,10 +6,8 @@ def format_timestamp(timestamp):
     return datetime.fromisoformat(timestamp.replace("Z", "+00:00")).strftime('%Y-%m-%d %H:%M:%S')
 
 def save_to_csv(data, filename):
-    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    filename_with_timestamp = f"{timestamp}_{filename}"
     df = pd.DataFrame(data)
-    df.to_csv(filename_with_timestamp, index=False)
+    df.to_csv(filename, index=False)
     print(df.head())  # for logging
 
 
