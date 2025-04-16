@@ -1,14 +1,25 @@
 import requests
 import pandas as pd
 from datetime import datetime  
+import os
 
 def format_timestamp(timestamp):
     return datetime.fromisoformat(timestamp.replace("Z", "+00:00")).strftime('%Y-%m-%d %H:%M:%S')
 
+
 def save_to_csv(data, filename):
     df = pd.DataFrame(data)
+    if os.path.exists(filename):
+        existing_df = pd.read_csv(filename)
+        df = pd.concat([existing_df, df], ignore_index=True)
     df.to_csv(filename, index=False)
-    print(df.head())  # for logging
+    print(df.tail())  
+
+
+# def save_to_csv(data, filename):
+#     df = pd.DataFrame(data)
+#     df.to_csv(filename, index=False)
+#     print(df.head())  # for logging
 
 
 def main():
