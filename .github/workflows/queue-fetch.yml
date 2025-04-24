@@ -1,11 +1,9 @@
-
-
 name: Fetch Queue Times
 
 on:
   schedule:
-    - cron: '*/20 * * * *'  # every 20 minutes
-  workflow_dispatch:
+    - cron: '*/20 * * * *'  # Runs every 20 minutes
+  workflow_dispatch:         
 
 jobs:
   fetch:
@@ -26,14 +24,15 @@ jobs:
     - name: Run script
       run: python queue_time_tracker.py
 
-    - name: Commit updated CSV to repository
+    - name: Commit and push CSV to repository
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git pull origin main
         git add data/queue_times.csv
-        git commit -m "Update queue_times.csv [skip ci]" || echo "No changes to commit"
-        git push origin main
+        git commit -m "Update queue times CSV"
+        git push origin main  # Replace with your branch if not 'main'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
 
