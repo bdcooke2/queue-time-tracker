@@ -1,3 +1,4 @@
+
 name: Fetch Queue Times
 
 on:
@@ -24,22 +25,11 @@ jobs:
     - name: Run script
       run: python queue_time_tracker.py
 
-    - name: Set up GitHub token
-      run: |
-        echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
-
-    - name: Configure Git
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global http.https://github.com/.extraheader "AUTHORIZATION: bearer ${{ secrets.GH_TOKEN }}"
-
-    - name: Commit and push queue times CSV
-      run: |
-        git add data/queue_times.csv
-        git commit -m "Update queue times CSV"
-        git push origin main
-
+    - name: Upload CSV
+      uses: actions/upload-artifact@v4
+      with:
+        name: queue_times
+        path: queue_times.csv
 
 
 
@@ -70,9 +60,19 @@ jobs:
 #     - name: Run script
 #       run: python queue_time_tracker.py
 
-#     - name: Upload CSV
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: queue_times
-#         path: queue_times.csv
+#     - name: Set up GitHub token
+#       run: |
+#         echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
+
+#     - name: Configure Git
+#       run: |
+#         git config --global user.name "github-actions[bot]"
+#         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#         git config --global http.https://github.com/.extraheader "AUTHORIZATION: bearer ${{ secrets.GH_TOKEN }}"
+
+#     - name: Commit and push queue times CSV
+#       run: |
+#         git add data/queue_times.csv
+#         git commit -m "Update queue times CSV"
+#         git push origin main
 
