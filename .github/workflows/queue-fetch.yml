@@ -1,35 +1,35 @@
 
-name: Fetch Queue Times
+# name: Fetch Queue Times
 
-on:
-  schedule:
-    - cron: '*/20 * * * *' # Runs every 20 minutes (UTC)
-  workflow_dispatch:        # Allows you to manually trigger it
+# on:
+#   schedule:
+#     - cron: '*/20 * * * *' # Runs every 20 minutes (UTC)
+#   workflow_dispatch:        # Allows you to manually trigger it
 
-jobs:
-  fetch:
-    runs-on: ubuntu-latest 
+# jobs:
+#   fetch:
+#     runs-on: ubuntu-latest 
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+#     - name: Set up Python
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.11'
 
-    - name: Install dependencies
-      run: pip install -r queue-times-tracker-packages.txt
+#     - name: Install dependencies
+#       run: pip install -r queue-times-tracker-packages.txt
 
-    - name: Run script
-      run: python queue_time_tracker.py
+#     - name: Run script
+#       run: python queue_time_tracker.py
 
-    - name: Upload CSV
-      uses: actions/upload-artifact@v4
-      with:
-        name: queue_times
-        path: queue_times.csv
+#     - name: Upload CSV
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: queue_times
+#         path: queue_times.csv
 
 
 
@@ -72,7 +72,48 @@ jobs:
 
 #     - name: Commit and push queue times CSV
 #       run: |
+
+
 #         git add data/queue_times.csv
 #         git commit -m "Update queue times CSV"
 #         git push origin main
+
+
+name: Fetch Queue Times
+
+on:
+  schedule:
+    - cron: '*/20 * * * *' # Runs every 20 minutes (UTC)
+  workflow_dispatch:        # Allows you to manually trigger it
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest 
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: pip install -r queue-times-tracker-packages.txt
+
+    - name: Run script
+      run: python queue_time_tracker.py
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Commit and push updated CSV
+      run: |
+        git add queue_times.csv
+        git commit -m "Append new queue times data"
+        git push origin main
+
 
