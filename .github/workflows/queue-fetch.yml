@@ -2,12 +2,12 @@ name: Fetch Queue Times
 
 on:
   schedule:
-    - cron: '*/20 * * * *'  # Runs every 20 minutes (UTC)
+    - cron: '*/20 * * * *' # Runs every 20 minutes (UTC)
   workflow_dispatch:        # Allows you to manually trigger it
 
 jobs:
   fetch:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
 
     steps:
     - name: Checkout code
@@ -24,14 +24,23 @@ jobs:
     - name: Run script
       run: python queue_time_tracker.py
 
-    - name: Commit and push updated CSV file
+    - name: Set up GitHub token
+      run: |
+        echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
+
+    - name: Configure Git
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git remote set-url origin https://x-access-token:${{ secrets.ACTIONS_TOKEN }}@github.com/${{ github.repository }}
+        git config --global http.https://github.com/.extraheader "AUTHORIZATION: bearer ${{ secrets.GH_TOKEN }}"
+
+    - name: Commit and push queue times CSV
+      run: |
         git add data/queue_times.csv
         git commit -m "Update queue times CSV"
-        git push
+        git push origin main
+
+
 
 
 
