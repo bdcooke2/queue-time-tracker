@@ -2,7 +2,7 @@ name: Fetch Queue Times
 
 on:
   schedule:
-    - cron: '*/60 * * * *' # Runs every hour (UTC)
+    - cron: '*/20 * * * *' # Runs every hour (UTC)
   workflow_dispatch:        # Allows you to manually trigger it
 
 jobs:
