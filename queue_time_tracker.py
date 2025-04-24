@@ -7,15 +7,21 @@ import os
 def format_timestamp(timestamp):
     return datetime.fromisoformat(timestamp.replace("Z", "+00:00")).strftime('%Y-%m-%d %H:%M:%S')
 
+
+# def save_to_csv(data, filename):
+#     df = pd.DataFrame(data)
+#     if os.path.exists(filename):
+#         existing_df = pd.read_csv(filename)
+#         df = pd.concat([existing_df, df], ignore_index=True)
+#     df.to_csv(filename, index=False)
+#     print(df.tail())  
+
+
 def save_to_csv(data, filename):
     df = pd.DataFrame(data)
-
-    if os.path.exists(filename):
-        existing_df = pd.read_csv(filename)
-        df = pd.concat([existing_df, df], ignore_index=True)
-
     df.to_csv(filename, index=False)
-    print(df.tail())  # log last few rows
+    print(df.head())  # for logging
+
 
 def main():
     print(f"Fetching queue times at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -54,12 +60,15 @@ def main():
                     })
 
     if queue_times_list:
-        save_to_csv(queue_times_list, "data/queue_times.csv")
+        save_to_csv(queue_times_list, "queue_times.csv")
     else:
         print("No data found.")
 
 if __name__ == "__main__":
     main()
+
+
+
 
 
 
@@ -73,21 +82,15 @@ if __name__ == "__main__":
 # def format_timestamp(timestamp):
 #     return datetime.fromisoformat(timestamp.replace("Z", "+00:00")).strftime('%Y-%m-%d %H:%M:%S')
 
-
-# # def save_to_csv(data, filename):
-# #     df = pd.DataFrame(data)
-# #     if os.path.exists(filename):
-# #         existing_df = pd.read_csv(filename)
-# #         df = pd.concat([existing_df, df], ignore_index=True)
-# #     df.to_csv(filename, index=False)
-# #     print(df.tail())  
-
-
 # def save_to_csv(data, filename):
 #     df = pd.DataFrame(data)
-#     df.to_csv(filename, index=False)
-#     print(df.head())  # for logging
 
+#     if os.path.exists(filename):
+#         existing_df = pd.read_csv(filename)
+#         df = pd.concat([existing_df, df], ignore_index=True)
+
+#     df.to_csv(filename, index=False)
+#     print(df.tail())  # log last few rows
 
 # def main():
 #     print(f"Fetching queue times at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -126,7 +129,7 @@ if __name__ == "__main__":
 #                     })
 
 #     if queue_times_list:
-#         save_to_csv(queue_times_list, "queue_times.csv")
+#         save_to_csv(queue_times_list, "data/queue_times.csv")
 #     else:
 #         print("No data found.")
 
