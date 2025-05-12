@@ -1,19 +1,19 @@
+
+
 name: Fetch Queue Times
 
 on:
   schedule:
-    - cron: '*/20 * * * *' # Runs every 20 minutes UTC
-  workflow_dispatch:
+    - cron: '*/20 * * * *' # Runs every 20 minutes (UTC)
+  workflow_dispatch:        # Allows you to manually trigger it
 
 jobs:
   fetch:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -24,57 +24,13 @@ jobs:
       run: pip install -r queue-times-tracker-packages.txt
 
     - name: Run script
-      run: |
-        mkdir -p data
-        python queue_time_tracker.py
+      run: python queue_time_tracker.py
 
-    - name: List data folder contents (debugging step)
-      run: ls -la data/  # This will list files in the 'data' directory to ensure CSV is there
-
-    - name: Add CSV to git
-      run: |
-        TIMESTAMP=$(date -u +"%Y-%m-%d_%H-%M")
-        git config --global user.name "github-actions"
-        git config --global user.email "github-actions@github.com"
-        git add data/queue_times.csv  # Make sure to add the specific file path
-        git commit -m "Add queue times for $TIMESTAMP" || echo "No changes to commit"
-
-    - name: Push CSV to repository
-      run: |
-        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
-
-
-# name: Fetch Queue Times
-
-# on:
-#   schedule:
-#     - cron: '*/20 * * * *' # Runs every 20 minutes (UTC)
-#   workflow_dispatch:        # Allows you to manually trigger it
-
-# jobs:
-#   fetch:
-#     runs-on: ubuntu-latest 
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v3
-
-#     - name: Set up Python
-#       uses: actions/setup-python@v4
-#       with:
-#         python-version: '3.11'
-
-#     - name: Install dependencies
-#       run: pip install -r queue-times-tracker-packages.txt
-
-#     - name: Run script
-#       run: python queue_time_tracker.py
-
-#     - name: Upload CSV
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: queue_times
-#         path: queue_times.csv
+    - name: Upload CSV
+      uses: actions/upload-artifact@v4
+      with:
+        name: queue_times
+        path: queue_times.csv
 
 
 
