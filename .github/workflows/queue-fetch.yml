@@ -28,6 +28,9 @@ jobs:
         mkdir -p data
         python queue_time_tracker.py
 
+    - name: List data folder contents (debugging step)
+      run: ls -la data/  # This will list files in the 'data' directory to ensure CSV is there
+
     - name: Add CSV to git
       run: |
         TIMESTAMP=$(date -u +"%Y-%m-%d_%H-%M")
