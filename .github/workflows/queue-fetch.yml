@@ -1,18 +1,55 @@
 
+# name: Fetch Queue Times
+
+# on:
+#   schedule:
+#     - cron: '*/20 * * * *' # Runs every 20 minutes (UTC)
+#   workflow_dispatch:        # Allows you to manually trigger it
+
+# jobs:
+#   fetch:
+#     runs-on: ubuntu-latest 
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+
+#     - name: Set up Python
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.11'
+
+#     - name: Install dependencies
+#       run: pip install -r queue-times-tracker-packages.txt
+
+#     - name: Run script
+#       run: python queue_time_tracker.py
+
+#     - name: Upload CSV
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: queue_times
+#         path: queue_times.csv
+
+
+
+
 name: Fetch Queue Times
 
 on:
   schedule:
-    - cron: '*/20 * * * *' # Runs every 20 minutes (UTC)
-  workflow_dispatch:        # Allows you to manually trigger it
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
 
 jobs:
   fetch:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        persist-credentials: false  # We’ll use a token instead
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -25,11 +62,21 @@ jobs:
     - name: Run script
       run: python queue_time_tracker.py
 
-    - name: Upload CSV
-      uses: actions/upload-artifact@v4
-      with:
-        name: queue_times
-        path: queue_times.csv
+    - name: Configure Git
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+
+    - name: Commit CSV to repo
+      run: |
+        mkdir -p data
+        timestamp=$(date +"%Y-%m-%d_%H-%M")
+        mv queue_times.csv data/queue_times_$timestamp.csv
+        git pull origin main
+        git add data/
+        git commit -m "Add queue times for $timestamp" || echo "No changes to commit"
+        git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+
 
 
 
