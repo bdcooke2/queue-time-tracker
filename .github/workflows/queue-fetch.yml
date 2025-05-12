@@ -28,13 +28,16 @@ jobs:
         mkdir -p data
         python queue_time_tracker.py
 
-    - name: Commit and push CSV
+    - name: Add CSV to git
       run: |
         TIMESTAMP=$(date -u +"%Y-%m-%d_%H-%M")
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
-        git add data/
+        git add data/queue_times.csv  # Make sure to add the specific file path
         git commit -m "Add queue times for $TIMESTAMP" || echo "No changes to commit"
+
+    - name: Push CSV to repository
+      run: |
         git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
 
 
